@@ -122,7 +122,7 @@ while True:
               
             elif input_terminal.lower().startswith("whois "):
                  Whois = input_terminal[6:].strip()
-                 os.system("cls" if os.name else "clear")
+                 os.system("cls" if os.name == "nt" else "clear")
                  print(Fore.GREEN + Style.BRIGHT + pyfiglet.figlet_format("WHOIS-OSINT" , font="doom"))
                  try:
                       info = whois.whois(Whois)
@@ -183,8 +183,7 @@ while True:
                 
             elif input_terminal.lower() == "exit":
                   break
-            elif input_terminal.lower() == "clear" or input_terminal.lower() == "cls":
-                os.system("cls" if os.name else "clear")
+            elif input_terminal.lower() == "clear" or input_terminal.lower() == "cls":)
                 os.system("cls"  if os.name == "nt" else "clear")
                 banner = pyfiglet.figlet_format("BLACK-XITERS", font="doom")
                 print(Fore.GREEN + Style.BRIGHT + banner)
