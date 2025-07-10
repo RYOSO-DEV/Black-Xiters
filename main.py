@@ -98,7 +98,7 @@ while True:
 
             elif input_terminal.lower().startswith("ipinfo "):
                   target = input_terminal[7:].strip()
-                  os.system("cls" if os.name else "clear")
+                  os.system("cls"  if os.name == "nt" else "clear")
                   print(Fore.GREEN + Style.BRIGHT + pyfiglet.figlet_format("IP-INFO-OSINT" , font="doom"))
                   try:
                        print(Fore.YELLOW + Style.BRIGHT + f"\n[*] Fetching IP info for {target}...\n" + Fore.RESET)
