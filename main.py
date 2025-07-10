@@ -183,7 +183,7 @@ while True:
                 
             elif input_terminal.lower() == "exit":
                   break
-            elif input_terminal.lower() == "clear" or input_terminal.lower() == "cls":)
+            elif input_terminal.lower() == "clear" or input_terminal.lower() == "cls":
                 os.system("cls"  if os.name == "nt" else "clear")
                 banner = pyfiglet.figlet_format("BLACK-XITERS", font="doom")
                 print(Fore.GREEN + Style.BRIGHT + banner)
