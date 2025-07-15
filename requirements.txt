@@ -4,3 +4,4 @@ psutil==7.0.0
 requests==2.32.4
 python-whois==0.9.5
 playwright==1.53.0
+playwright install
